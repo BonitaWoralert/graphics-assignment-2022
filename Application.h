@@ -22,6 +22,8 @@ struct ConstantBuffer
 	XMMATRIX mProjection;
 };
 
+
+
 class Application
 {
 private:
@@ -42,6 +44,8 @@ private:
 	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
+
+	ID3D11RasterizerState* _wireFrame;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
