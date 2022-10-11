@@ -67,6 +67,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 	// Initialize the world matrix
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
+    XMStoreFloat4x4(&_world2, XMMatrixIdentity());
 
     // Initialize the view matrix
 	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
@@ -448,7 +449,9 @@ void Application::Update()
     //
     // Animate the cube
     //
-	XMStoreFloat4x4(&_world, XMMatrixRotationY(t));
+    XMStoreFloat4x4(&_world, XMMatrixRotationY(t));
+    XMStoreFloat4x4(&_world2, XMMatrixRotationY(t)
+                              * XMMatrixTranslation(2.0f,0.0f,0.0f));
 }
 
 void Application::Draw()
@@ -483,6 +486,10 @@ void Application::Draw()
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 	_pImmediateContext->DrawIndexed(36, 0, 0);
 
+    world = XMLoadFloat4x4(&_world2);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
     //
     // Present our back buffer to our front buffer
     //
