@@ -194,14 +194,19 @@ HRESULT Application::InitIndexBuffer()
     {
         0,1,2,
         2,1,3,
+
         1,5,3,
         3,5,7,
-        5,4,6,
-        6,4,7,
+
+        5,4,7,
+        7,4,6, 
+
         4,0,6,
         6,0,2,
+
         4,5,0,
         0,5,1,
+
         6,7,2,
         2,7,3
     };
@@ -345,6 +350,20 @@ HRESULT Application::InitDevice()
     if (FAILED(hr))
         return hr;
 
+    //depth buffer
+    D3D11_TEXTURE2D_DESC depthStencilDesc;
+    depthStencilDesc.Width = _WindowWidth;
+    depthStencilDesc.Height = _WindowHeight;
+    depthStencilDesc.MipLevels = 1;
+    depthStencilDesc.ArraySize = 1;
+    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilDesc.SampleDesc.Count = 1;
+    depthStencilDesc.SampleDesc.Quality = 0;
+    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilDesc.CPUAccessFlags = 0;
+    depthStencilDesc.MiscFlags = 0;
+
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
     hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
@@ -358,7 +377,10 @@ HRESULT Application::InitDevice()
     if (FAILED(hr))
         return hr;
 
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, nullptr);
+    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_depthStencilBuffer);
+    _pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
+
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _depthStencilView);
 
     // Setup the viewport
     D3D11_VIEWPORT vp;
@@ -370,7 +392,9 @@ HRESULT Application::InitDevice()
     vp.TopLeftY = 0;
     _pImmediateContext->RSSetViewports(1, &vp);
 
-	InitShadersAndInputLayout();
+    HRESULT hr2;
+    hr2 = InitShadersAndInputLayout();
+    if (FAILED(hr)) return S_FALSE;
 
 	InitVertexBuffer();
 
@@ -424,6 +448,8 @@ void Application::Cleanup()
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
     if (_wireFrame) _wireFrame->Release();
+    if (_depthStencilBuffer) _depthStencilBuffer->Release();
+    if (_depthStencilView) _depthStencilView->Release();
 }
 
 void Application::Update()
@@ -461,8 +487,9 @@ void Application::Draw()
     //
     float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    _pImmediateContext->RSSetState(_wireFrame);
+    //_pImmediateContext->RSSetState(_wireFrame);
 
 	XMMATRIX world = XMLoadFloat4x4(&_world);
 	XMMATRIX view = XMLoadFloat4x4(&_view);

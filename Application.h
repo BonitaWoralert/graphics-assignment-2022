@@ -47,6 +47,9 @@ private:
 
 	ID3D11RasterizerState* _wireFrame;
 
+	ID3D11Texture2D* _depthStencilBuffer;
+	ID3D11DepthStencilView* _depthStencilView;
+
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
