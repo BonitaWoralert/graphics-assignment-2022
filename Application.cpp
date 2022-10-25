@@ -185,12 +185,18 @@ HRESULT Application::InitVertexBuffer()
     //PYRAMID vertex buffer
     SimpleVertex pyramidvertices[] =
     {
-        { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+        /*{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
         { XMFLOAT3(0.0f, 2.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
         { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
 
         { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) }
+        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) }*/
+
+        { XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+        { XMFLOAT3(1.0f, 0.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+        { XMFLOAT3(-1.0f, 0.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+        { XMFLOAT3(0.0f, 2.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
     };
 
     D3D11_BUFFER_DESC pyramidbd;
@@ -257,15 +263,19 @@ HRESULT Application::InitIndexBuffer()
     //PYRAMID INDICES
     WORD pyramidindices[] =
     {
-        2,1,0,
-        0,1,3
+        0,4,1,
+        1,4,2,
+        2,4,3,
+        3,4,0,
+        3,0,1,
+        1,2,3
     };
 
     D3D11_BUFFER_DESC pyramidbd;
     ZeroMemory(&pyramidbd, sizeof(pyramidbd));
 
     pyramidbd.Usage = D3D11_USAGE_DEFAULT;
-    pyramidbd.ByteWidth = sizeof(WORD) * 8;
+    pyramidbd.ByteWidth = sizeof(WORD) * 18;
     pyramidbd.BindFlags = D3D11_BIND_INDEX_BUFFER;
     pyramidbd.CPUAccessFlags = 0;
 
@@ -570,7 +580,7 @@ void Application::Draw()
 	//cube
     //_pImmediateContext->DrawIndexed(36, 0, 0);
     //pyramid
-    _pImmediateContext->DrawIndexed(8, 0, 0);
+    _pImmediateContext->DrawIndexed(18, 0, 0);
 
     world = XMLoadFloat4x4(&_world2);
     cb.mWorld = XMMatrixTranspose(world);
@@ -578,7 +588,7 @@ void Application::Draw()
     //cube
     // _pImmediateContext->DrawIndexed(36, 0, 0);
     //pyramid
-    _pImmediateContext->DrawIndexed(8, 0, 0);
+    _pImmediateContext->DrawIndexed(18, 0, 0);
     //
     // Present our back buffer to our front buffer
     //
