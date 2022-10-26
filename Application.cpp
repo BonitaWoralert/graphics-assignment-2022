@@ -453,6 +453,10 @@ HRESULT Application::InitDevice()
     }
 
 	//PUT IT BACK HERE IF IT BREAKS
+    InitVertexBuffer();
+    InitIndexBuffer();
+
+    
 
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -546,7 +550,7 @@ void Application::Draw()
     _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     //toggle wireframe
-
+    
     if (GetAsyncKeyState(0x57)) //W for "wireframe" pressed
     {
         //set to wireframe
@@ -557,6 +561,7 @@ void Application::Draw()
         //set to solid
         _pImmediateContext->RSSetState(_solid);
     }
+    
 
 	XMMATRIX world = XMLoadFloat4x4(&_world);
 	XMMATRIX view = XMLoadFloat4x4(&_view);
@@ -572,8 +577,6 @@ void Application::Draw()
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
     //VERTEX AND INDEX BUFFER
-    InitVertexBuffer();
-
     // Set vertex buffer
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
@@ -582,14 +585,11 @@ void Application::Draw()
     //pyramid
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pPyramidVertexBuffer, &stride, &offset);
 
-    InitIndexBuffer();
-
     // Set index buffer
     //cube
     //_pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     //pyramid
     _pImmediateContext->IASetIndexBuffer(_pPyramidIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
 
     //
     // Renders a triangle
