@@ -537,7 +537,7 @@ void Application::Update()
     //
     XMStoreFloat4x4(&_world, XMMatrixRotationX(t));
     XMStoreFloat4x4(&_world2, XMMatrixRotationY(t)
-                              * XMMatrixTranslation(2.5f,0.0f,3.0f));
+                              * XMMatrixTranslation(2.5f,0.0f,2.0f));
 }
 
 void Application::Draw()
