@@ -42,5 +42,7 @@ VS_OUTPUT VS( float3 Pos : POSITION, float4 Color : COLOR )
 //--------------------------------------------------------------------------------------
 float4 PS( VS_OUTPUT input ) : SV_Target
 {
+    float4 Multiply = (0.5f, 0.5f, 0.5f, 1.0f);
+    //input.Color * Multiply;
     return input.Color;
 }
