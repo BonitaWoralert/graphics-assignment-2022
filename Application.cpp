@@ -576,19 +576,14 @@ void Application::Draw()
 
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
-    //VERTEX AND INDEX BUFFER
-    // Set vertex buffer
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
-    //cube
-    //_pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+    //VERTEX AND INDEX BUFFER
+    // Set vertex buffer
     //pyramid
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pPyramidVertexBuffer, &stride, &offset);
 
     // Set index buffer
-    //cube
-    //_pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    //pyramid
     _pImmediateContext->IASetIndexBuffer(_pPyramidIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
     //
@@ -598,11 +593,11 @@ void Application::Draw()
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	//cube
-    //_pImmediateContext->DrawIndexed(36, 0, 0);
+	
     //pyramid
     _pImmediateContext->DrawIndexed(18, 0, 0);
 
+    //cube buffers
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
     _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
@@ -611,9 +606,7 @@ void Application::Draw()
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     //cube
     _pImmediateContext->DrawIndexed(36, 0, 0);
-    //pyramid
-    //_pImmediateContext->DrawIndexed(18, 0, 0);
-    //
+
     // Present our back buffer to our front buffer
     //
     _pSwapChain->Present(0, 0);
