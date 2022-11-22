@@ -603,13 +603,16 @@ void Application::Draw()
     //pyramid
     _pImmediateContext->DrawIndexed(18, 0, 0);
 
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
     world = XMLoadFloat4x4(&_world2);
     cb.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     //cube
-    //_pImmediateContext->DrawIndexed(36, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
     //pyramid
-    _pImmediateContext->DrawIndexed(18, 0, 0);
+    //_pImmediateContext->DrawIndexed(18, 0, 0);
     //
     // Present our back buffer to our front buffer
     //
