@@ -151,18 +151,49 @@ HRESULT Application::InitVertexBuffer()
 {
 	HRESULT hr;
 
+    XMFLOAT3 vertex[8]
+    {
+        XMFLOAT3(-1.0f, 1.0f, 0.0f), //0
+        XMFLOAT3(1.0f, 1.0f, 0.0f),
+        XMFLOAT3(-1.0f, -1.0f, 0.0f),
+        XMFLOAT3(1.0f, -1.0f, 0.0f),
+        XMFLOAT3(-1.0f, 1.0f, 2.0f),
+        XMFLOAT3(1.0f, 1.0f, 2.0f),
+        XMFLOAT3(-1.0f, -1.0f, 2.0f),
+        XMFLOAT3(1.0f, -1.0f, 2.0f)
+    };
+
+    XMFLOAT3 vectors[16]
+    {
+        //0
+        XMFLOAT3(vertex[1].x - vertex[0].x,vertex[1].y - vertex[0].y, vertex[1].z - vertex[0].z), XMFLOAT3(vertex[2].x - vertex[0].x,vertex[2].y - vertex[0].y, vertex[2].z - vertex[0].z),
+        //1
+        XMFLOAT3(vertex[2].x - vertex[1].x,vertex[2].y - vertex[1].y, vertex[2].z - vertex[1].z), XMFLOAT3(vertex[3].x - vertex[1].x,vertex[3].y - vertex[1].y, vertex[3].z - vertex[1].z),
+        //2
+        XMFLOAT3(vertex[0].x - vertex[2].x,vertex[0].y - vertex[2].y, vertex[0].z - vertex[2].z), XMFLOAT3(vertex[1].x - vertex[2].x,vertex[1].y - vertex[2].y, vertex[1].z - vertex[2].z),
+        //3
+        XMFLOAT3(vertex[1].x - vertex[3].x,vertex[1].y - vertex[3].y, vertex[1].z - vertex[3].z), XMFLOAT3(vertex[5].x - vertex[3].x,vertex[5].y - vertex[3].y, vertex[5].z - vertex[3].z),
+        //4
+        XMFLOAT3(vertex[0].x - vertex[4].x,vertex[0].y - vertex[4].y, vertex[0].z - vertex[4].z), XMFLOAT3(vertex[6].x - vertex[4].x,vertex[6].y - vertex[4].y, vertex[6].z - vertex[4].z),
+        //5
+        XMFLOAT3(vertex[3].x - vertex[5].x,vertex[3].y - vertex[5].y, vertex[3].z - vertex[5].z), XMFLOAT3(vertex[3].x - vertex[5].x,vertex[3].y - vertex[5].y, vertex[3].z - vertex[5].z),
+        //6
+
+    };
+
+
     // Create vertex buffer
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -1.0f, 1.0f, 0.0f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3( 1.0f, 1.0f, 0.0f ), XMFLOAT4( 0.0f, 1.0f, 0.0f, 1.0f ) },
-        { XMFLOAT3( -1.0f, -1.0f, 0.0f ), XMFLOAT4( 0.0f, 1.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3( 1.0f, -1.0f, 0.0f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) },
+        { XMFLOAT3( -1.0f, 1.0f, 0.0f ), XMFLOAT3( 0.0f, 0.0f, -4.0f ) },
+        { XMFLOAT3( 1.0f, 1.0f, 0.0f ), XMFLOAT3( 0.0f, 1.0f, 0.0f ) },
+        { XMFLOAT3( -1.0f, -1.0f, 0.0f ), XMFLOAT3( 0.0f, 1.0f, 1.0f ) },
+        { XMFLOAT3( 1.0f, -1.0f, 0.0f ), XMFLOAT3( 1.0f, 0.0f, 0.0f ) },
 
-        { XMFLOAT3(-1.0f, 1.0f, 2.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-        { XMFLOAT3(1.0f, 1.0f, 2.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-        { XMFLOAT3(-1.0f, -1.0f, 2.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
-        { XMFLOAT3(1.0f, -1.0f, 2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+        { XMFLOAT3(-1.0f, 1.0f, 2.0f), XMFLOAT3(0.0f, 0.0f, 1.0f ) },
+        { XMFLOAT3(1.0f, 1.0f, 2.0f), XMFLOAT3(0.0f, 1.0f, 0.0f ) },
+        { XMFLOAT3(-1.0f, -1.0f, 2.0f), XMFLOAT3(0.0f, 1.0f, 1.0f ) },
+        { XMFLOAT3(1.0f, -1.0f, 2.0f), XMFLOAT3(1.0f, 0.0f, 0.0f ) },
 
     };
 
@@ -185,11 +216,11 @@ HRESULT Application::InitVertexBuffer()
     //PYRAMID vertex buffer
     SimpleVertex pyramidvertices[] =
     {
-        { XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-        { XMFLOAT3(1.0f, 0.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-        { XMFLOAT3(-1.0f, 0.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
-        { XMFLOAT3(-1.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
-        { XMFLOAT3(0.0f, 2.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+        { XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+        { XMFLOAT3(1.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+        { XMFLOAT3(-1.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
+        { XMFLOAT3(0.0f, 2.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
     };
 
     D3D11_BUFFER_DESC pyramidbd;
