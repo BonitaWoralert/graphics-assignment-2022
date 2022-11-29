@@ -539,8 +539,8 @@ void Application::Update()
     //
     // Animate the cube
     //
-    XMStoreFloat4x4(&_world, XMMatrixRotationY(t));
-    XMStoreFloat4x4(&_world2, XMMatrixRotationX(t) * XMMatrixTranslation(2.5f,0.0f,2.0f) * XMLoadFloat4x4(&_world));
+    XMStoreFloat4x4(&_world2, XMMatrixRotationX(t));
+    XMStoreFloat4x4(&_world, XMMatrixRotationX(t) * XMMatrixTranslation(2.5f,0.0f,2.0f) * XMLoadFloat4x4(&_world2));
 }
 
 void Application::Draw()
