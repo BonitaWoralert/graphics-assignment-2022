@@ -20,6 +20,10 @@ struct ConstantBuffer
 	XMMATRIX mWorld;
 	XMMATRIX mView;
 	XMMATRIX mProjection;
+
+	XMFLOAT4 DiffLight;
+	XMFLOAT4 DiffMat;
+	XMFLOAT3 DirToLight;
 };
 
 
@@ -64,6 +68,10 @@ private:
 
 	UINT _WindowHeight;
 	UINT _WindowWidth;
+
+	XMFLOAT4 DiffuseMaterial;
+	XMFLOAT4 DiffuseLight;
+	XMFLOAT3 directionToLight;
 
 public:
 	Application();

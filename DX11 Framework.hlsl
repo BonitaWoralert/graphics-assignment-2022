@@ -12,6 +12,10 @@ cbuffer ConstantBuffer : register( b0 )
 	matrix World;
 	matrix View;
 	matrix Projection;
+
+    float4 DiffuseLight;
+    float4 DiffuseMaterial;
+    float3 DirectionToLight;
 }
 
 //--------------------------------------------------------------------------------------
@@ -25,7 +29,7 @@ struct VS_OUTPUT
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float3 Pos : POSITION, float4 Color : COLOR )
+VS_OUTPUT VS( float3 Pos : POSITION, float3 Normal : NORMAL )
 {
     float4 pos4 = float4(Pos, 1.0f);
     
@@ -34,7 +38,7 @@ VS_OUTPUT VS( float3 Pos : POSITION, float4 Color : COLOR )
     output.PosW = output.Pos;
     output.Pos = mul( output.Pos, View );
     output.Pos = mul( output.Pos, Projection );
-    output.Color = Color * output.PosW.y;
+    output.Color = float4(Normal, 1.0f);
     return output;
 }
 

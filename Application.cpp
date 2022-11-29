@@ -58,6 +58,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
 
+    //lighting
+    DiffuseMaterial = XMFLOAT4(0.5f, 1.0f, 1.0f, 1.0f);
+    DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    directionToLight = XMFLOAT3(0.0f, 0.5f, -0.5f);
+
     if (FAILED(InitDevice()))
     {
         Cleanup();
@@ -128,7 +133,7 @@ HRESULT Application::InitShadersAndInputLayout()
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
@@ -151,50 +156,18 @@ HRESULT Application::InitVertexBuffer()
 {
 	HRESULT hr;
 
-    XMFLOAT3 vertex[8]
-    {
-        XMFLOAT3(-1.0f, 1.0f, 0.0f), //0
-        XMFLOAT3(1.0f, 1.0f, 0.0f),
-        XMFLOAT3(-1.0f, -1.0f, 0.0f),
-        XMFLOAT3(1.0f, -1.0f, 0.0f),
-        XMFLOAT3(-1.0f, 1.0f, 2.0f),
-        XMFLOAT3(1.0f, 1.0f, 2.0f),
-        XMFLOAT3(-1.0f, -1.0f, 2.0f),
-        XMFLOAT3(1.0f, -1.0f, 2.0f)
-    };
-
-    XMFLOAT3 vectors[16]
-    {
-        //0
-        XMFLOAT3(vertex[1].x - vertex[0].x,vertex[1].y - vertex[0].y, vertex[1].z - vertex[0].z), XMFLOAT3(vertex[2].x - vertex[0].x,vertex[2].y - vertex[0].y, vertex[2].z - vertex[0].z),
-        //1
-        XMFLOAT3(vertex[2].x - vertex[1].x,vertex[2].y - vertex[1].y, vertex[2].z - vertex[1].z), XMFLOAT3(vertex[3].x - vertex[1].x,vertex[3].y - vertex[1].y, vertex[3].z - vertex[1].z),
-        //2
-        XMFLOAT3(vertex[0].x - vertex[2].x,vertex[0].y - vertex[2].y, vertex[0].z - vertex[2].z), XMFLOAT3(vertex[1].x - vertex[2].x,vertex[1].y - vertex[2].y, vertex[1].z - vertex[2].z),
-        //3
-        XMFLOAT3(vertex[1].x - vertex[3].x,vertex[1].y - vertex[3].y, vertex[1].z - vertex[3].z), XMFLOAT3(vertex[5].x - vertex[3].x,vertex[5].y - vertex[3].y, vertex[5].z - vertex[3].z),
-        //4
-        XMFLOAT3(vertex[0].x - vertex[4].x,vertex[0].y - vertex[4].y, vertex[0].z - vertex[4].z), XMFLOAT3(vertex[6].x - vertex[4].x,vertex[6].y - vertex[4].y, vertex[6].z - vertex[4].z),
-        //5
-        XMFLOAT3(vertex[3].x - vertex[5].x,vertex[3].y - vertex[5].y, vertex[3].z - vertex[5].z), XMFLOAT3(vertex[3].x - vertex[5].x,vertex[3].y - vertex[5].y, vertex[3].z - vertex[5].z),
-        //6
-
-    };
-
-
     // Create vertex buffer
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -1.0f, 1.0f, 0.0f ), XMFLOAT3( 0.0f, 0.0f, -4.0f ) },
-        { XMFLOAT3( 1.0f, 1.0f, 0.0f ), XMFLOAT3( 0.0f, 1.0f, 0.0f ) },
-        { XMFLOAT3( -1.0f, -1.0f, 0.0f ), XMFLOAT3( 0.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3( 1.0f, -1.0f, 0.0f ), XMFLOAT3( 1.0f, 0.0f, 0.0f ) },
+        { XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3 ( - 1.0f, 1.0f, -1.0f)},
+        { XMFLOAT3( 1.0f, 1.0f, -1.0f ), XMFLOAT3(1.0f, 1.0f, -1.0f) },
+        { XMFLOAT3( -1.0f, -1.0f, -1.0f ), XMFLOAT3(-1.0f, -1.0f, -1.0f) },
+        { XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(1.0f, -1.0f, -1.0f) },
 
-        { XMFLOAT3(-1.0f, 1.0f, 2.0f), XMFLOAT3(0.0f, 0.0f, 1.0f ) },
-        { XMFLOAT3(1.0f, 1.0f, 2.0f), XMFLOAT3(0.0f, 1.0f, 0.0f ) },
-        { XMFLOAT3(-1.0f, -1.0f, 2.0f), XMFLOAT3(0.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3(1.0f, -1.0f, 2.0f), XMFLOAT3(1.0f, 0.0f, 0.0f ) },
-
+        { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 1.0f) },
+        { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+        { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-1.0f, -1.0f, 1.0f) },
+        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, 1.0f) },
     };
 
     D3D11_BUFFER_DESC bd;
@@ -264,8 +237,8 @@ HRESULT Application::InitIndexBuffer()
         4,5,0,
         0,5,1,
 
-        6,7,2,
-        2,7,3
+        2,7,6,
+        3,7,2
     };
 
 	D3D11_BUFFER_DESC bd;
@@ -503,7 +476,7 @@ HRESULT Application::InitDevice()
     D3D11_RASTERIZER_DESC sdesc;
     ZeroMemory(&sdesc, sizeof(D3D11_RASTERIZER_DESC));
     sdesc.FillMode = D3D11_FILL_SOLID;
-    sdesc.CullMode = D3D11_CULL_NONE;
+    sdesc.CullMode = D3D11_CULL_BACK;
     hr = _pd3dDevice->CreateRasterizerState(&sdesc, &_solid);
 
 	// Create the constant buffer
@@ -566,8 +539,8 @@ void Application::Update()
     //
     // Animate the cube
     //
-    XMStoreFloat4x4(&_world, XMMatrixRotationX(t));
-    XMStoreFloat4x4(&_world2, XMMatrixRotationY(t) * XMMatrixTranslation(2.5f,0.0f,2.0f) * XMLoadFloat4x4(&_world));
+    XMStoreFloat4x4(&_world, XMMatrixRotationY(t));
+    XMStoreFloat4x4(&_world2, XMMatrixRotationX(t) * XMMatrixTranslation(2.5f,0.0f,2.0f) * XMLoadFloat4x4(&_world));
 }
 
 void Application::Draw()
@@ -603,6 +576,9 @@ void Application::Draw()
 	cb.mWorld = XMMatrixTranspose(world);
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
+    cb.DiffLight = DiffuseLight;
+    cb.DiffMat = DiffuseMaterial;
+    cb.DirToLight = directionToLight;
 
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
