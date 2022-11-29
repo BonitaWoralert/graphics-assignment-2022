@@ -63,6 +63,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     directionToLight = XMFLOAT3(0.0f, 0.5f, -0.5f);
 
+    AmbientMaterial = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
+    AmbientLight = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.2f);
+
     if (FAILED(InitDevice()))
     {
         Cleanup();
@@ -579,6 +582,9 @@ void Application::Draw()
     cb.DiffLight = DiffuseLight;
     cb.DiffMat = DiffuseMaterial;
     cb.DirToLight = directionToLight;
+    cb.AmbLight = AmbientLight;
+    cb.AmbMat = AmbientMaterial;
+
 
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 

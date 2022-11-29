@@ -24,6 +24,9 @@ struct ConstantBuffer
 	XMFLOAT4 DiffLight;
 	XMFLOAT4 DiffMat;
 	XMFLOAT3 DirToLight;
+
+	XMFLOAT4 AmbLight;
+	XMFLOAT4 AmbMat;
 };
 
 
@@ -69,9 +72,13 @@ private:
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 
+	//lighting
 	XMFLOAT4 DiffuseMaterial;
 	XMFLOAT4 DiffuseLight;
 	XMFLOAT3 directionToLight;
+
+	XMFLOAT4 AmbientLight;
+	XMFLOAT4 AmbientMaterial;
 
 public:
 	Application();

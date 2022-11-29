@@ -16,6 +16,9 @@ cbuffer ConstantBuffer : register( b0 )
     float4 DiffuseLight;
     float4 DiffuseMaterial;
     float3 DirectionToLight;
+    
+    float4 AmbientLight;
+    float4 AmbientMaterial;
 }
 
 //--------------------------------------------------------------------------------------
@@ -34,6 +37,8 @@ VS_OUTPUT VS( float3 Pos : POSITION, float3 Normal : NORMAL )
 {
     float4 pos4 = float4(Pos, 1.0f);
     float4 Normal4 = float4(Normal, 0.0f);
+    AmbientMaterial = float4(1.0f, 0.5f, 0.5f, 1.0f);
+    AmbientLight = float4(0.2f, 0.2f, 0.2f, 0.2f);
     
     VS_OUTPUT output = (VS_OUTPUT)0;
     output.Pos = mul( pos4, World);
@@ -43,7 +48,10 @@ VS_OUTPUT VS( float3 Pos : POSITION, float3 Normal : NORMAL )
     output.Pos = mul( output.Pos, Projection );
     
     float DiffuseAmount = dot(normalize(DirectionToLight), output.NormalW);
-    output.Color = DiffuseAmount * (DiffuseMaterial * DiffuseLight);
+    //output.Color = DiffuseAmount * (DiffuseMaterial * DiffuseLight);
+    
+    float4 Ambient = ((AmbientLight.r * AmbientMaterial.r), (AmbientLight.g * AmbientMaterial.g), (AmbientLight.b * AmbientMaterial.b), (AmbientLight.a * AmbientMaterial.a));
+    output.Color += Ambient;
     return output;
 }
 
