@@ -63,8 +63,13 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     directionToLight = XMFLOAT3(0.0f, 0.5f, -0.5f);
 
-    AmbientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    AmbientMaterial = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
     AmbientLight = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.2f);
+
+    SpecularMaterial = XMFLOAT4(0.0f,1.0f,0.0f,1.0f);
+    SpecularLight = XMFLOAT4(0.5f,0.5f,0.5f,0.5f);
+    SpecularPower = 10.0f; //Power to raise specular falloff by
+    EyeWorldPos = XMFLOAT3(0.0f,0.0f,-3.0f); //Camera's eye position in the world
 
     if (FAILED(InitDevice()))
     {
@@ -584,6 +589,11 @@ void Application::Draw()
     cb.DirToLight = directionToLight;
     cb.AmbLight = AmbientLight;
     cb.AmbMat = AmbientMaterial;
+    cb.SpecLight = SpecularLight;
+    cb.SpecMat = SpecularMaterial;
+    cb.SpecPower = SpecularPower;
+    cb.EyeWorldPos = EyeWorldPos;
+
 
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 

@@ -27,6 +27,11 @@ struct ConstantBuffer
 
 	XMFLOAT4 AmbLight;
 	XMFLOAT4 AmbMat;
+
+	XMFLOAT4 SpecMat;
+	XMFLOAT4 SpecLight;
+	FLOAT SpecPower;
+	XMFLOAT3 EyeWorldPos;
 };
 
 
@@ -79,6 +84,11 @@ private:
 
 	XMFLOAT4 AmbientLight;
 	XMFLOAT4 AmbientMaterial;
+
+	XMFLOAT4 SpecularMaterial;
+	XMFLOAT4 SpecularLight;
+	FLOAT SpecularPower; //Power to raise specular falloff by
+	XMFLOAT3 EyeWorldPos; //Camera's eye position in the world
 
 public:
 	Application();
