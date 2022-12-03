@@ -63,11 +63,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     directionToLight = XMFLOAT3(0.0f, 0.5f, -0.5f);
 
-    AmbientMaterial = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+    AmbientMaterial = XMFLOAT4(0.0f, 0.5f, 0.0f, 0.7f);
     AmbientLight = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.2f);
 
-    SpecularMaterial = XMFLOAT4(0.0f,1.0f,0.0f,1.0f);
-    SpecularLight = XMFLOAT4(0.5f,0.5f,0.5f,0.5f);
+    SpecularMaterial = XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
+    SpecularLight = XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
     SpecularPower = 10.0f; //Power to raise specular falloff by
     EyeWorldPos = XMFLOAT3(0.0f,0.0f,-3.0f); //Camera's eye position in the world
 
@@ -547,8 +547,8 @@ void Application::Update()
     //
     // Animate the cube
     //
-    XMStoreFloat4x4(&_world2, XMMatrixRotationX(t));
-    XMStoreFloat4x4(&_world, XMMatrixRotationX(t) * XMMatrixTranslation(2.5f,0.0f,2.0f) * XMLoadFloat4x4(&_world2));
+    XMStoreFloat4x4(&_world, XMMatrixRotationX(t));
+    XMStoreFloat4x4(&_world2, XMMatrixRotationX(t) * XMMatrixTranslation(2.5f,0.0f,2.0f) * XMLoadFloat4x4(&_world));
 }
 
 void Application::Draw()

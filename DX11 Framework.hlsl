@@ -62,30 +62,25 @@ VS_OUTPUT VS( float3 Pos : POSITION, float3 Normal : NORMAL )
 float4 PS( VS_OUTPUT input ) : SV_Target
 {
     //Diffuse Light calculations
-    float DiffuseAmount = dot(normalize(DirectionToLight), input.NormalW);
+    float DiffuseAmount = max(dot(normalize(DirectionToLight), input.NormalW), 0);
     float4 Diffuse = DiffuseAmount * (DiffuseMaterial * DiffuseLight);
+    
     //Ambient Light calculations
-    float4 Ambient = float4(
-    (AmbientLight.r * AmbientMaterial.r),
-    (AmbientLight.g * AmbientMaterial.g),
-    (AmbientLight.b * AmbientMaterial.b),
-    (AmbientLight.a * AmbientMaterial.a)
-    );
+    float4 Ambient = AmbientLight * AmbientMaterial;
+    
     //Specular Light calculations
-    float3 ReflectDir = reflect(-DirectionToLight, input.NormalW);
+    float3 ReflectDir = reflect(DirectionToLight, input.NormalW);
     float pad;
     float3 ViewerDir = normalize(input.PosW.xyz - EyeWorldPos);
-    float SpecIntensity = pow(max(dot(ReflectDir, ViewerDir), 0), SpecularPower);
-    float4 SpecPotential = float4(
-    (SpecularLight.r * SpecularMaterial.r),
-    (SpecularLight.g * SpecularMaterial.g),
-    (SpecularLight.b * SpecularMaterial.b),
-    (SpecularLight.a * SpecularMaterial.a)
-    );
+    float SpecIntensity = max(dot(ReflectDir, ViewerDir), 0);
+    pow(SpecIntensity, SpecularPower);
+    float4 SpecPotential = SpecularLight * SpecularMaterial;
     float4 Specular = SpecIntensity * SpecPotential;
     
     //final colour
+    //input.Color = Diffuse;
+    //input.Color = Ambient;
     //input.Color = Specular;
-    input.Color = Diffuse + Ambient;
+    input.Color = Specular + Diffuse + Ambient;
     return input.Color;
 }
