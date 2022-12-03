@@ -197,11 +197,11 @@ HRESULT Application::InitVertexBuffer()
     //PYRAMID vertex buffer
     SimpleVertex pyramidvertices[] =
     {
-        { XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-        { XMFLOAT3(1.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-        { XMFLOAT3(-1.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
-        { XMFLOAT3(-1.0f, 0.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
-        { XMFLOAT3(0.0f, 2.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+        { XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
+        { XMFLOAT3(1.0f, 0.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, -1.0f) },
+        { XMFLOAT3(-1.0f, 0.0f, -1.0f), XMFLOAT3(-1.0f, 0.0f, -1.0f) },
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f), XMFLOAT3(-1.0f, 0.0f, 1.0f) },
+        { XMFLOAT3(0.0f, 2.0f, 0.0f), XMFLOAT3(0.0f, 2.0f, 0.0f) },
     };
 
     D3D11_BUFFER_DESC pyramidbd;
@@ -547,8 +547,8 @@ void Application::Update()
     //
     // Animate the cube
     //
-    XMStoreFloat4x4(&_world, XMMatrixRotationX(t));
-    XMStoreFloat4x4(&_world2, XMMatrixRotationX(t) * XMMatrixTranslation(2.5f,0.0f,2.0f) * XMLoadFloat4x4(&_world));
+    XMStoreFloat4x4(&_world2, XMMatrixRotationX(t));
+    XMStoreFloat4x4(&_world, XMMatrixRotationX(t) * XMMatrixTranslation(4.0f, 0.0f, 0.0f) * XMLoadFloat4x4(&_world2));
 }
 
 void Application::Draw()
