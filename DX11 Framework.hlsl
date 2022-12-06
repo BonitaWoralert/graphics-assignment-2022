@@ -4,11 +4,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 
-//Shader Variables
-//--------------------------------------------------------------------------------------
-
-Texture2D texDiffuse : register(t0);
-SamplerState sampLinear : register(s0);
 
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
@@ -28,6 +23,17 @@ cbuffer ConstantBuffer : register( b0 )
     float4 SpecularLight;
     float SpecularPower;
     float3 EyeWorldPos;
+}
+
+//Shader Variables
+//--------------------------------------------------------------------------------------
+
+Texture2D texDiffuse : register(t0);
+SamplerState sampLinear : register(s0);
+
+float4 Hadamard(float4 a, float4 b)
+{
+    return (float4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w));
 }
 
 //--------------------------------------------------------------------------------------
@@ -54,7 +60,7 @@ VS_OUTPUT VS( float3 Pos : POSITION, float3 Normal : NORMAL, float2 TexCoord : T
     output.NormalW = normalize(mul(Normal4, World));
     output.Pos = mul( output.Pos, View );
     output.Pos = mul( output.Pos, Projection );
-    
+    output.TexCoord = TexCoord;
     return output;
 }
 
@@ -72,12 +78,12 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     float4 Ambient = AmbientLight * AmbientMaterial;
     
     //Specular Light calculations
-    float3 ReflectDir = reflect(DirectionToLight, input.NormalW);
-    float pad;
-    float3 ViewerDir = normalize(input.PosW.xyz - EyeWorldPos);
+    float3 ReflectDir = normalize((DirectionToLight, input.NormalW));
+    float3 ViewerDir = -normalize(input.PosW.xyz - EyeWorldPos);
     float SpecIntensity = max(dot(ReflectDir, ViewerDir), 0);
-    pow(SpecIntensity, SpecularPower);
-    float4 SpecPotential = SpecularLight * SpecularMaterial;
+    SpecIntensity = pow(SpecIntensity, SpecularPower);
+    float4 SpecPotential = Hadamard(SpecularMaterial, SpecularLight);
+    //float4 SpecPotential = SpecularLight * SpecularMaterial;
     float4 Specular = SpecIntensity * SpecPotential;
     
     //texture colour 
@@ -87,6 +93,7 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     //input.Color = Diffuse;
     //input.Color = Ambient;
     //input.Color = Specular;
-    input.Color = textureColour + Specular + Diffuse + Ambient;
+    input.Color = textureColour * (Specular + Diffuse + Ambient);
+    //input.Color = ViewerDir.xyzz;
     return input.Color;
 }

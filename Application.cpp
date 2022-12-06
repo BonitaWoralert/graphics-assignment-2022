@@ -66,33 +66,15 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     directionToLight = XMFLOAT3(0.0f, 0.5f, -0.5f);
 
-    AmbientMaterial = XMFLOAT4(0.0f, 0.5f, 0.0f, 0.7f);
+    AmbientMaterial = XMFLOAT4(0.5f, 0.0f, 0.5f, 0.7f);
     AmbientLight = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.2f);
 
     SpecularMaterial = XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
-    SpecularLight = XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
+    SpecularLight = XMFLOAT4(0.5f,0.5f,0.5f,1.0f);
     SpecularPower = 10.0f; //Power to raise specular falloff by
     EyeWorldPos = XMFLOAT3(0.0f,0.0f,-3.0f); //Camera's eye position in the world
 
-    //loading textures
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
-    _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
-
-    //defining sampler
-    D3D11_SAMPLER_DESC sampDesc;
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD = 0;
-    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-    _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-    //which sampler to use in shader:
-    //set to sampler register 1
-    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+    
 
     if (FAILED(InitDevice()))
     {
@@ -114,6 +96,26 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     // Initialize the projection matrix
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
+
+    //loading textures
+    CreateDDSTextureFromFile(_pd3dDevice, L"Textures/Crate_COLOR.dds", nullptr, &_pTextureRV);
+    _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
+
+    //defining sampler
+    D3D11_SAMPLER_DESC sampDesc;
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+    //which sampler to use in shader:
+    //set to sampler register 1
+    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 
 	return S_OK;
 }
@@ -192,14 +194,14 @@ HRESULT Application::InitVertexBuffer()
     SimpleVertex vertices[] =
     {
         { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(0.0f,0.0f)},
-        { XMFLOAT3( 1.0f, 1.0f, -1.0f ), XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(0.0f,0.0f)},
-        { XMFLOAT3( -1.0f, -1.0f, -1.0f ), XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f,0.0f)},
-        { XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f,0.0f)},
+        { XMFLOAT3( 1.0f, 1.0f, -1.0f ), XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f,0.0f)},
+        { XMFLOAT3( -1.0f, -1.0f, -1.0f ), XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f,1.0f)},
+        { XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f,1.0f)},
 
-        { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f,0.0f)},
-        { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f,0.0f)},
-        { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f,0.0f)},
-        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f,0.0f)},
+        { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(1.0f,0.0f)},
+        { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(1.0f,0.0f)},
+        { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(1.0f,1.0f)},
+        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f,1.0f)},
     };
 
     D3D11_BUFFER_DESC bd;

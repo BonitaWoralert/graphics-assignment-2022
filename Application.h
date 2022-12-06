@@ -25,7 +25,7 @@ struct ConstantBuffer
 	XMFLOAT4 DiffLight;
 	XMFLOAT4 DiffMat;
 	XMFLOAT3 DirToLight;
-
+	FLOAT pad;
 	XMFLOAT4 AmbLight;
 	XMFLOAT4 AmbMat;
 
