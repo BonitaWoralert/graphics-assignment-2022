@@ -4,6 +4,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 
+//Shader Variables
+//--------------------------------------------------------------------------------------
+
+Texture2D texDiffuse : register(t0);
+SamplerState sampLinear : register(s0);
+
 
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
@@ -25,16 +31,7 @@ cbuffer ConstantBuffer : register( b0 )
     float3 EyeWorldPos;
 }
 
-//Shader Variables
-//--------------------------------------------------------------------------------------
 
-Texture2D texDiffuse : register(t0);
-SamplerState sampLinear : register(s0);
-
-float4 Hadamard(float4 a, float4 b)
-{
-    return (float4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w));
-}
 
 //--------------------------------------------------------------------------------------
 struct VS_OUTPUT
@@ -82,8 +79,7 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     float3 ViewerDir = -normalize(input.PosW.xyz - EyeWorldPos);
     float SpecIntensity = max(dot(ReflectDir, ViewerDir), 0);
     SpecIntensity = pow(SpecIntensity, SpecularPower);
-    float4 SpecPotential = Hadamard(SpecularMaterial, SpecularLight);
-    //float4 SpecPotential = SpecularLight * SpecularMaterial;
+    float4 SpecPotential = SpecularLight * SpecularMaterial;
     float4 Specular = SpecIntensity * SpecPotential;
     
     //texture colour 
@@ -94,6 +90,5 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     //input.Color = Ambient;
     //input.Color = Specular;
     input.Color = textureColour * (Specular + Diffuse + Ambient);
-    //input.Color = ViewerDir.xyzz;
     return input.Color;
 }

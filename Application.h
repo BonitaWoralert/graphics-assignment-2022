@@ -6,15 +6,15 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 #include "resource.h"
-
+#include "OBJLoader.h"
 using namespace DirectX;
 
-struct SimpleVertex
-{
-    XMFLOAT3 Pos;
-    XMFLOAT3 Normal;
-	XMFLOAT2 TexCoord;
-};
+//struct SimpleVertex
+//{
+//    XMFLOAT3 Pos;
+//    XMFLOAT3 Normal;
+//	XMFLOAT2 TexCoord;
+//};
 
 struct ConstantBuffer
 {
@@ -71,6 +71,10 @@ private:
 	//texturing
 	ID3D11ShaderResourceView* _pTextureRV;
 	ID3D11SamplerState* _pSamplerLinear;
+
+	//obj load
+	MeshData* _pMeshData;
+
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();

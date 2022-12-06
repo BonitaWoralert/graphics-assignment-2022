@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "DDSTextureLoader.h"
+#include "OBJLoader.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -42,6 +43,7 @@ Application::Application()
 	_pConstantBuffer = nullptr;
     _pTextureRV = nullptr;
     _pSamplerLinear = nullptr;
+    _pMeshData = nullptr;
 }
 
 Application::~Application()
