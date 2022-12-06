@@ -380,14 +380,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="DDSTextureLoader.h" />
     <CLInclude Include="resource.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Textures\asphalt_COLOR.dds" />
+    <Image Include="Textures\asphalt_DISP.dds" />
+    <Image Include="Textures\asphalt_NORMAL.dds" />
+    <Image Include="Textures\asphalt_SPEC.dds" />
+    <Image Include="Textures\Crate_COLOR.dds" />
+    <Image Include="Textures\Crate_NRM.dds" />
+    <Image Include="Textures\Crate_SPEC.dds" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

@@ -13,6 +13,7 @@ struct SimpleVertex
 {
     XMFLOAT3 Pos;
     XMFLOAT3 Normal;
+	XMFLOAT2 TexCoord;
 };
 
 struct ConstantBuffer
@@ -59,12 +60,17 @@ private:
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
+	//wireframe + solid states
 	ID3D11RasterizerState* _wireFrame;
 	ID3D11RasterizerState* _solid;
-
+	
+	//depth buffer
 	ID3D11Texture2D* _depthStencilBuffer;
 	ID3D11DepthStencilView* _depthStencilView;
 
+	//texturing
+	ID3D11ShaderResourceView* _pTextureRV;
+	ID3D11SamplerState* _pSamplerLinear;
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();

@@ -4,7 +4,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 
+//Shader Variables
 //--------------------------------------------------------------------------------------
+
+Texture2D texDiffuse : register(t0);
+SamplerState sampLinear : register(s0);
+
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
 cbuffer ConstantBuffer : register( b0 )
@@ -32,18 +37,16 @@ struct VS_OUTPUT
     float4 Color : COLOR0;
     float3 PosW : POSITION0;
     float3 NormalW : NORMAL0;
-    
+    float2 TexCoord : TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float3 Pos : POSITION, float3 Normal : NORMAL )
+VS_OUTPUT VS( float3 Pos : POSITION, float3 Normal : NORMAL, float2 TexCoord : TEXCOORD )
 {
     float4 pos4 = float4(Pos, 1.0f);
     float4 Normal4 = float4(Normal, 0.0f);
-    //AmbientMaterial = float4(1.0f, 0.0f, 0.0f, 1.0f);
-    //AmbientLight = float4(0.2f, 0.2f, 0.2f, 0.2f);
     
     VS_OUTPUT output = (VS_OUTPUT)0;
     output.Pos = mul( pos4, World);
@@ -77,10 +80,13 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     float4 SpecPotential = SpecularLight * SpecularMaterial;
     float4 Specular = SpecIntensity * SpecPotential;
     
+    //texture colour 
+    float4 textureColour = texDiffuse.Sample(sampLinear, input.TexCoord);
+    
     //final colour
     //input.Color = Diffuse;
     //input.Color = Ambient;
     //input.Color = Specular;
-    input.Color = Specular + Diffuse + Ambient;
+    input.Color = textureColour + Specular + Diffuse + Ambient;
     return input.Color;
 }
