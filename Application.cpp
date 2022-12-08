@@ -101,10 +101,10 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     //load 3d model! 
 
     //3ds max object
-    _MeshData = OBJLoader::Load("3ds/star.obj", _pd3dDevice);
+    //_MeshData = OBJLoader::Load("3ds/cube.obj", _pd3dDevice);
 
     //blender object
-    //_MeshData = OBJLoader::Load("Blender/donut.obj", _pd3dDevice, false);
+    _MeshData = OBJLoader::Load("Blender/Fox.obj", _pd3dDevice, false);
 
 
     //loading textures
