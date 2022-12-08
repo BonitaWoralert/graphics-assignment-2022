@@ -401,8 +401,6 @@
     <Image Include="Textures\Crate_NRM.dds" />
     <Image Include="Textures\Crate_SPEC.dds" />
   </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

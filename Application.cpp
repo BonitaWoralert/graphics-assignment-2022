@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "DDSTextureLoader.h"
-#include "OBJLoader.h"
+#include "Structures.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -43,7 +43,6 @@ Application::Application()
 	_pConstantBuffer = nullptr;
     _pTextureRV = nullptr;
     _pSamplerLinear = nullptr;
-    _pMeshData = nullptr;
 }
 
 Application::~Application()
@@ -98,6 +97,15 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     // Initialize the projection matrix
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
+
+    //load 3d model! 
+
+    //3ds max object
+    _MeshData = OBJLoader::Load("3ds/star.obj", _pd3dDevice);
+
+    //blender object
+    //_MeshData = OBJLoader::Load("Blender/donut.obj", _pd3dDevice, false);
+
 
     //loading textures
     CreateDDSTextureFromFile(_pd3dDevice, L"Textures/Crate_COLOR.dds", nullptr, &_pTextureRV);
@@ -581,7 +589,8 @@ void Application::Update()
     //
     // Animate the cube
     //
-    XMStoreFloat4x4(&_world2, XMMatrixRotationY(t));
+    XMStoreFloat4x4(&_world3, XMMatrixRotationY(t));
+    XMStoreFloat4x4(&_world2, XMMatrixRotationY(t) * XMMatrixTranslation(4.0f, 0.0f, 0.0f) * XMLoadFloat4x4(&_world3));
     XMStoreFloat4x4(&_world, XMMatrixRotationX(t) * XMMatrixTranslation(4.0f, 0.0f, 0.0f) * XMLoadFloat4x4(&_world2));
 }
 
@@ -661,6 +670,15 @@ void Application::Draw()
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     //cube
     _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    //obj
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_MeshData.VertexBuffer, &_MeshData.VBStride, &_MeshData.VBOffset);
+    _pImmediateContext->IASetIndexBuffer(_MeshData.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    world = XMLoadFloat4x4(&_world3);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    //finally, draw obj 
+    _pImmediateContext->DrawIndexed(_MeshData.IndexCount, 0, 0);
 
     // Present our back buffer to our front buffer
     //

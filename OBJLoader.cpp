@@ -1,4 +1,5 @@
 #include "OBJLoader.h"
+//#include "Structures.h"
 #include <string>
 
 bool OBJLoader::FindSimilarVertex(const SimpleVertex& vertex, std::map<SimpleVertex, unsigned short>& vertToIndexMap, unsigned short& index)

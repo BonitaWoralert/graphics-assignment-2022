@@ -9,34 +9,6 @@
 #include "OBJLoader.h"
 using namespace DirectX;
 
-//struct SimpleVertex
-//{
-//    XMFLOAT3 Pos;
-//    XMFLOAT3 Normal;
-//	XMFLOAT2 TexCoord;
-//};
-
-struct ConstantBuffer
-{
-	XMMATRIX mWorld;
-	XMMATRIX mView;
-	XMMATRIX mProjection;
-
-	XMFLOAT4 DiffLight;
-	XMFLOAT4 DiffMat;
-	XMFLOAT3 DirToLight;
-	FLOAT pad;
-	XMFLOAT4 AmbLight;
-	XMFLOAT4 AmbMat;
-
-	XMFLOAT4 SpecMat;
-	XMFLOAT4 SpecLight;
-	FLOAT SpecPower;
-	XMFLOAT3 EyeWorldPos;
-};
-
-
-
 class Application
 {
 private:
@@ -56,7 +28,7 @@ private:
 	ID3D11Buffer*           _pIndexBuffer;
 	ID3D11Buffer*			_pPyramidIndexBuffer;
 	ID3D11Buffer*           _pConstantBuffer;
-	XMFLOAT4X4              _world, _world2;
+	XMFLOAT4X4              _world, _world2, _world3;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
@@ -73,7 +45,7 @@ private:
 	ID3D11SamplerState* _pSamplerLinear;
 
 	//obj load
-	MeshData* _pMeshData;
+	MeshData _MeshData;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
