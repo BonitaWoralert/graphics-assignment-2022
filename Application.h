@@ -45,7 +45,9 @@ private:
 	ID3D11SamplerState* _pSamplerLinear;
 
 	//obj load
-	MeshData _MeshData;
+	MeshData _Mesh1;
+	MeshData _Mesh2;
+	MeshData _Mesh3;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);

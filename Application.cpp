@@ -101,14 +101,16 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     //load 3d model! 
 
     //3ds max object
-    //_MeshData = OBJLoader::Load("3ds/cube.obj", _pd3dDevice);
+    _Mesh3 = OBJLoader::Load("3ds/cube.obj", _pd3dDevice);
 
     //blender object
-    _MeshData = OBJLoader::Load("Blender/Fox.obj", _pd3dDevice, false);
+    _Mesh1 = OBJLoader::Load("Blender/Fox.obj", _pd3dDevice, false);
+
+    _Mesh2 = OBJLoader::Load("Blender/sphere.obj", _pd3dDevice, false);
 
 
     //loading textures
-    CreateDDSTextureFromFile(_pd3dDevice, L"Textures/Crate_COLOR.dds", nullptr, &_pTextureRV);
+    CreateDDSTextureFromFile(_pd3dDevice, L"Textures/Forest_COLOR.dds", nullptr, &_pTextureRV);
     _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
 
     //defining sampler
@@ -195,6 +197,7 @@ HRESULT Application::InitShadersAndInputLayout()
 
 	return hr;
 }
+
 
 HRESULT Application::InitVertexBuffer()
 {
@@ -336,6 +339,7 @@ HRESULT Application::InitIndexBuffer()
 
 	return S_OK;
 }
+
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
@@ -506,9 +510,10 @@ HRESULT Application::InitDevice()
         return S_FALSE;
     }
 
-
+    
     InitVertexBuffer();
     InitIndexBuffer();
+    
 
     
 
@@ -640,8 +645,11 @@ void Application::Draw()
 
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
+    
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
+
+    /*
     //VERTEX AND INDEX BUFFER
     // Set vertex buffer
     //pyramid
@@ -670,15 +678,40 @@ void Application::Draw()
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     //cube
     _pImmediateContext->DrawIndexed(36, 0, 0);
+    */
+    
 
-    //obj
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_MeshData.VertexBuffer, &_MeshData.VBStride, &_MeshData.VBOffset);
-    _pImmediateContext->IASetIndexBuffer(_MeshData.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
+    _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+    _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+
+    //mesh 1
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_Mesh1.VertexBuffer, &_Mesh1.VBStride, &_Mesh1.VBOffset);
+    _pImmediateContext->IASetIndexBuffer(_Mesh1.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     world = XMLoadFloat4x4(&_world3);
     cb.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     //finally, draw obj 
-    _pImmediateContext->DrawIndexed(_MeshData.IndexCount, 0, 0);
+    _pImmediateContext->DrawIndexed(_Mesh1.IndexCount, 0, 0);
+
+    //mesh2
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_Mesh2.VertexBuffer, &_Mesh2.VBStride, &_Mesh2.VBOffset);
+    _pImmediateContext->IASetIndexBuffer(_Mesh2.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    world = XMLoadFloat4x4(&_world2);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    //finally, draw obj 
+    _pImmediateContext->DrawIndexed(_Mesh2.IndexCount, 0, 0);
+
+    //mesh3
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_Mesh3.VertexBuffer, &_Mesh3.VBStride, &_Mesh3.VBOffset);
+    _pImmediateContext->IASetIndexBuffer(_Mesh3.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    world = XMLoadFloat4x4(&_world);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    //finally, draw obj 
+    _pImmediateContext->DrawIndexed(_Mesh1.IndexCount, 0, 0);
 
     // Present our back buffer to our front buffer
     //
