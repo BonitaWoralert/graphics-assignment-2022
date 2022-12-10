@@ -8,31 +8,23 @@
 
 using namespace DirectX;
 
-/*
-struct SimpleVertex
-{
-    XMFLOAT3 Pos;
-    XMFLOAT3 Normal;
-    XMFLOAT2 TexCoord;
-};
-*/
-
-
 struct ConstantBuffer
 {
 	XMMATRIX mWorld;
 	XMMATRIX mView;
 	XMMATRIX mProjection;
 
+	//diffuse lights
 	XMFLOAT4 DiffLight;
 	XMFLOAT4 DiffMat;
 	XMFLOAT3 DirToLight;
-	FLOAT pad;
+	FLOAT pad; //pad for float3 above 
+	//ambient lights
 	XMFLOAT4 AmbLight;
 	XMFLOAT4 AmbMat;
-
+	//specular lights
 	XMFLOAT4 SpecMat;
 	XMFLOAT4 SpecLight;
 	FLOAT SpecPower;
-	XMFLOAT3 EyeWorldPos;
+	XMFLOAT3 EyeWorldPos;//eye position
 };

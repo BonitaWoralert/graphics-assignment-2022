@@ -23,12 +23,8 @@ private:
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
-	ID3D11Buffer*           _pVertexBuffer;
-	ID3D11Buffer*			_pPyramidVertexBuffer;
-	ID3D11Buffer*           _pIndexBuffer;
-	ID3D11Buffer*			_pPyramidIndexBuffer;
 	ID3D11Buffer*           _pConstantBuffer;
-	XMFLOAT4X4              _world, _world2, _world3;
+	XMFLOAT4X4              _world, _world2, _world3; //worlds for 3 different .obj files
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
@@ -44,7 +40,7 @@ private:
 	ID3D11ShaderResourceView* _pTextureRV;
 	ID3D11SamplerState* _pSamplerLinear;
 
-	//obj load
+	//obj loads 
 	MeshData _Mesh1;
 	MeshData _Mesh2;
 	MeshData _Mesh3;
@@ -55,20 +51,23 @@ private:
 	void Cleanup();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
-	HRESULT InitVertexBuffer();
-	HRESULT InitIndexBuffer();
 
+	//size of window
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 
-	//lighting
+	//lighting section! 
+
+	//diffuse floats
 	XMFLOAT4 DiffuseMaterial;
 	XMFLOAT4 DiffuseLight;
 	XMFLOAT3 directionToLight;
 
+	//ambient floats
 	XMFLOAT4 AmbientLight;
 	XMFLOAT4 AmbientMaterial;
 
+	//specular floats
 	XMFLOAT4 SpecularMaterial;
 	XMFLOAT4 SpecularLight;
 	FLOAT SpecularPower; //Power to raise specular falloff by
