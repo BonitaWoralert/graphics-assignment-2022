@@ -2,6 +2,7 @@
 #include "DDSTextureLoader.h"
 #include "Structures.h"
 
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -41,6 +42,8 @@ Application::Application()
 	_pConstantBuffer = nullptr;
     _pTextureRV = nullptr;
     _pSamplerLinear = nullptr;
+
+    
 }
 
 Application::~Application()
@@ -86,15 +89,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
     XMStoreFloat4x4(&_world2, XMMatrixIdentity());
 
-    // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
-	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
-
-    // Initialize the projection matrix
-	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
+    //initialise camera
+    _camera = new Camera(XMFLOAT3(0.0f, 0.0f, -3.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), _WindowWidth, _WindowHeight, 0.01f, 100.0f);
 
     //load 3d model! 
 
@@ -230,7 +226,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 		return E_FAIL;
 
     ShowWindow(_hWnd, nCmdShow);
-
+    
     return S_OK;
 }
 
@@ -439,10 +435,11 @@ void Application::Update()
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
 
+
     //
     // Animate meshes! 
     //
-
+    
     //finn
     XMStoreFloat4x4(&_world3, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.8f, -0.3f));
     //sphere
@@ -462,22 +459,35 @@ void Application::Draw()
     _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     //toggle wireframe logic
-    
-    if (GetAsyncKeyState(0x57)) //W for "wireframe" pressed
+    if (GetAsyncKeyState(0x31)) //1 for "wireframe" pressed
     {
         //set to wireframe
         _pImmediateContext->RSSetState(_wireFrame);
     }
-    else if (GetAsyncKeyState(0x53)) //S for "solid" pressed
+    else if (GetAsyncKeyState(0x32)) //2 for "solid" pressed
     {
         //set to solid
         _pImmediateContext->RSSetState(_solid);
     }
 
+    //update camera
+    _camera->Update();
+
     //world, view, projection matrix
 	XMMATRIX world = XMLoadFloat4x4(&_world);
-	XMMATRIX view = XMLoadFloat4x4(&_view);
-	XMMATRIX projection = XMLoadFloat4x4(&_projection);
+    XMMATRIX view = _camera->GetViewMatrix();
+    XMMATRIX projection = _camera->GetProjMatrix();
+
+    //camera zoom
+    if (GetAsyncKeyState(VK_UP) && 0x01) 
+    {
+        _camera->SetPos(XMFLOAT3(_camera->GetPos().x, _camera->GetPos().y, (_camera->GetPos().z + 0.001)));
+    }
+    else if (GetAsyncKeyState(VK_DOWN) && 0x01)
+    {
+        _camera->SetPos(XMFLOAT3(_camera->GetPos().x, _camera->GetPos().y, (_camera->GetPos().z - 0.001)));
+    }
+    
     //
     // Set variables for the constant buffer
     //

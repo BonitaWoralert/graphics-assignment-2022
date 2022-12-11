@@ -7,6 +7,7 @@
 #include <directxcolors.h>
 #include "resource.h"
 #include "OBJLoader.h"
+#include "Camera.h"
 using namespace DirectX;
 
 class Application
@@ -25,8 +26,6 @@ private:
 	ID3D11InputLayout*      _pVertexLayout;
 	ID3D11Buffer*           _pConstantBuffer;
 	XMFLOAT4X4              _world, _world2, _world3; //worlds for 3 different .obj files
-	XMFLOAT4X4              _view;
-	XMFLOAT4X4              _projection;
 
 	//wireframe + solid states
 	ID3D11RasterizerState* _wireFrame;
@@ -44,6 +43,9 @@ private:
 	MeshData _Mesh1;
 	MeshData _Mesh2;
 	MeshData _Mesh3;
+
+	//camera
+	Camera* _camera;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
