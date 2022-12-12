@@ -44,11 +44,8 @@ public:
 	void SetLookAt(XMFLOAT3 newLookAt);
 	void SetUp(XMFLOAT3 newUp);
 
-	//get view, projection, and combined ViewProjection matrices
+	//get view and projection matrices
 	XMMATRIX GetViewMatrix();
 	XMMATRIX GetProjMatrix();
-
-	//reshape camera volume if window resized
-	void Reshape(FLOAT windowWidth, FLOAT windowHeight, FLOAT nearDepth, FLOAT farDepth);
 };
 

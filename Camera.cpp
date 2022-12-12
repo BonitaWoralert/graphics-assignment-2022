@@ -1,16 +1,5 @@
 #include "Camera.h"
 
-/*
-// Initialize the view matrix
-_eye = XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
-_at = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-_up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
-
-// Initialize the projection matrix
-XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
-*/
 
 Camera::Camera(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, FLOAT windowWidth, FLOAT windowHeight, FLOAT nearDepth, FLOAT farDepth)
 {
@@ -40,11 +29,6 @@ void Camera::Update()
 
 	//projection matrix
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _windowWidth / (FLOAT)_windowHeight, _nearDepth, _farDepth));
-}
-
-
-void Camera::Reshape(FLOAT windowWidth, FLOAT windowHeight, FLOAT nearDepth, FLOAT farDepth)
-{
 }
 
 XMFLOAT3 Camera::GetPos() {return _eye;}
